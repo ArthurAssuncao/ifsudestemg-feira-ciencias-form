@@ -39,6 +39,8 @@ export default function FormularioAvaliacao() {
     "idle" | "success" | "error"
   >("idle");
   const [trabalhoHasObservacoes, setTrabalhoHasObservacoes] = useState(false);
+  const [password, setPassword] = useState("");
+  const [passwordValidated, setPasswordValidated] = useState(false);
 
   // Encontrar avaliador pelo nome
   const avaliadorSelecionado = AVALIADORES.find(
@@ -135,11 +137,12 @@ export default function FormularioAvaliacao() {
 
   const handleSubmit = async (e: React.FormEvent): Promise<void> => {
     e.preventDefault();
-
-    // Validação do email institucional
-    const emailRegex = /^[a-zA-Z0-9._%+-]+@ifsudestemg\.edu\.br$/;
-    if (!emailRegex.test(formData.email)) {
-      alert("Por favor, use um email institucional @ifsudestemg.edu.br");
+    let validated = false;
+    if (!validated) {
+      validated = await verificarPalavraPasse();
+    }
+    if (!passwordValidated || validated === false) {
+      alert("Palavra passe incorreta");
       return;
     }
 
@@ -220,6 +223,28 @@ export default function FormularioAvaliacao() {
 
   const nomesAvaliadores = AVALIADORES.map((av) => av.nome);
   const titulosTrabalhos = trabalhosFiltrados.map((t) => t.titulo);
+
+  const verificarPalavraPasse = async () => {
+    if (passwordValidated) {
+      return true;
+    }
+    const response = await fetch("/api/validate", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ password: password }),
+    });
+
+    const data = await response.json();
+
+    if (data.success) {
+      setPasswordValidated(true);
+      return true;
+    } else {
+      return false;
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
@@ -401,6 +426,23 @@ export default function FormularioAvaliacao() {
                   rows={4}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500"
                   placeholder="Ausência de aluno, observação sobre apresentação, etc."
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Palavra passe
+                </label>
+                <span className="text-sm text-red-600 mr-2">
+                  Para submeter utilize a palavra passe que foi enviada pela
+                  organização
+                </span>
+                <input
+                  type="text"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500"
+                  placeholder="Palavra passe"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                 />
               </div>
 
