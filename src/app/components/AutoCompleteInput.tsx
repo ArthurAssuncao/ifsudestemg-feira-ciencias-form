@@ -125,7 +125,7 @@ export function AutoCompleteInput({
         placeholder={placeholder}
         required={required}
         disabled={disabled}
-        className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
+        className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
         aria-autocomplete="list"
         aria-haspopup="listbox"
       />
@@ -144,7 +144,7 @@ export function AutoCompleteInput({
               aria-selected={index === highlightedIndex}
               className={`px-3 py-2 cursor-pointer transition-colors ${
                 index === highlightedIndex
-                  ? "bg-blue-100 text-blue-900"
+                  ? "bg-green-100 text-green-900"
                   : "hover:bg-gray-100"
               }`}
               onMouseDown={() => handleSelect(option)}

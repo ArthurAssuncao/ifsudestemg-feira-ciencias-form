@@ -214,14 +214,14 @@ export const TRABALHOS: Trabalho[] = [
     id: "2",
     titulo: "Vesúvio Elétrico",
     equipe: "G2",
-    avaliadores: ["4", "19"],
+    avaliadores: ["19", "20"],
     hasObservacoes: false,
   },
   {
     id: "3",
     titulo: "O avanço mais importante da Eletricidade",
     equipe: "G3",
-    avaliadores: ["2", "32"],
+    avaliadores: ["19", "32"],
     hasObservacoes: false,
   },
   {
@@ -249,7 +249,7 @@ export const TRABALHOS: Trabalho[] = [
     id: "7",
     titulo: "Tubo de Rubens",
     equipe: "G7",
-    avaliadores: ["7", "26"],
+    avaliadores: ["21", "32"],
     hasObservacoes: false,
   },
   {
