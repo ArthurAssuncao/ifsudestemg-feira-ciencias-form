@@ -8,6 +8,7 @@ import logoFeira from "../../img/logo-feira-animated.svg";
 import { AutoCompleteInput } from "../components/AutoCompleteInput";
 import { NotaInput } from "../components/NotaInput";
 import { AVALIADORES, TRABALHOS } from "../data";
+import { useAlert } from "../hooks/useAlert";
 import { FormData } from "../types";
 
 export default function FormularioAvaliacao() {
@@ -31,6 +32,7 @@ export default function FormularioAvaliacao() {
     "cumprimentoProposta",
     "inovacaoCriatividade",
   ];
+  const { showAlert, AlertComponent } = useAlert();
 
   // const [mostrarTodosTrabalhos, setMostrarTodosTrabalhos] = useState(false);
   // const [trabalhosFiltrados, setTrabalhosFiltrados] = useState<Trabalho[]>([]);
@@ -170,7 +172,7 @@ export default function FormularioAvaliacao() {
       validated = await verificarPalavraPasse();
     }
     if (!passwordValidated || validated === false) {
-      alert("Palavra passe incorreta");
+      showAlert("Palavra passe incorreta");
       return;
     }
 
@@ -228,6 +230,10 @@ export default function FormularioAvaliacao() {
       });
       setNumeroEquipeTitulo("");
 
+      showAlert(
+        `Avaliação do trabalho ${formData.titulo} enviada com sucesso!`
+      );
+
       // Mostrar mensagem de sucesso
       setTimeout(() => {
         setSubmitStatus("idle");
@@ -237,7 +243,7 @@ export default function FormularioAvaliacao() {
       setSubmitStatus("error");
 
       // Mensagem de erro genérica, já que não podemos ver o erro específico com no-cors
-      alert(
+      showAlert(
         "Erro ao enviar formulário. Verifique sua conexão e tente novamente."
       );
 
@@ -300,31 +306,32 @@ export default function FormularioAvaliacao() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-2xl mx-auto">
-        <div className="bg-white rounded-lg shadow-md overflow-hidden">
-          <div className="px-6 py-8">
-            <div className="text-center mb-8">
-              <div className="flex items-center justify-center w-full">
-                <Image
-                  src={logoFeira}
-                  alt="Logo da Feira de Ciências"
-                  width={500}
-                  height={50}
-                />
+    <>
+      <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-2xl mx-auto">
+          <div className="bg-white rounded-lg shadow-md overflow-hidden">
+            <div className="px-6 py-8">
+              <div className="text-center mb-8">
+                <div className="flex items-center justify-center w-full">
+                  <Image
+                    src={logoFeira}
+                    alt="Logo da Feira de Ciências"
+                    width={500}
+                    height={50}
+                  />
+                </div>
+                <h1 className="text-3xl font-bold text-gray-900">
+                  Formulário de Avaliação
+                </h1>
+                <p className="text-gray-600 mt-2">
+                  Avaliação de Trabalhos Acadêmicos
+                </p>
               </div>
-              <h1 className="text-3xl font-bold text-gray-900">
-                Formulário de Avaliação
-              </h1>
-              <p className="text-gray-600 mt-2">
-                Avaliação de Trabalhos Acadêmicos
-              </p>
-            </div>
 
-            <form onSubmit={handleSubmit} className="space-y-6">
-              {/* E-mail */}
-              <div>
-                {/* <label className="block text-sm font-medium text-gray-700 mb-1">
+              <form onSubmit={handleSubmit} className="space-y-6">
+                {/* E-mail */}
+                <div>
+                  {/* <label className="block text-sm font-medium text-gray-700 mb-1">
                   E-mail <span className="text-red-500">*</span>
                 </label>
                 <input
@@ -335,36 +342,36 @@ export default function FormularioAvaliacao() {
                   className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500"
                   placeholder="seu@email.com"
                 /> */}
+                  <AutoCompleteInput
+                    label="E-mail do Avaliador"
+                    value={formData.email}
+                    onChange={(value) => {
+                      handleChange("email", value);
+                      handleEmailSelect(value);
+                    }}
+                    options={AVALIADORES.map(
+                      (a) => `${a.emailUsuario}@${a.emailProvedor}`
+                    )}
+                    placeholder="seu.nome@email.com"
+                    required
+                  />
+                </div>
+
+                {/* Nome do Avaliador */}
                 <AutoCompleteInput
-                  label="E-mail do Avaliador"
-                  value={formData.email}
+                  label="Nome do Avaliador"
+                  value={formData.nomeAvaliador}
                   onChange={(value) => {
-                    handleChange("email", value);
-                    handleEmailSelect(value);
+                    handleChange("nomeAvaliador", value);
+                    handleNomeSelect(value);
                   }}
-                  options={AVALIADORES.map(
-                    (a) => `${a.emailUsuario}@${a.emailProvedor}`
-                  )}
-                  placeholder="seu.nome@email.com"
+                  options={nomesAvaliadores.map((n) => toTitleCase(n, true))}
                   required
                 />
-              </div>
 
-              {/* Nome do Avaliador */}
-              <AutoCompleteInput
-                label="Nome do Avaliador"
-                value={formData.nomeAvaliador}
-                onChange={(value) => {
-                  handleChange("nomeAvaliador", value);
-                  handleNomeSelect(value);
-                }}
-                options={nomesAvaliadores.map((n) => toTitleCase(n, true))}
-                required
-              />
-
-              {/* Título do Trabalho */}
-              <div>
-                {/* <div className="flex justify-between items-center mb-1">
+                {/* Título do Trabalho */}
+                <div>
+                  {/* <div className="flex justify-between items-center mb-1">
                   <label className="block text-sm font-medium text-gray-700"></label>
                   <button
                     type="button"
@@ -379,58 +386,61 @@ export default function FormularioAvaliacao() {
                   </button>
                 </div> */}
 
-                <input
-                  data-label="Título do Trabalho"
-                  value={formData.titulo}
-                  placeholder="Selecione ou digite o título"
-                  readOnly
-                  className="hidden w-full mb-2 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
-                  required
-                />
+                  <input
+                    data-label="Título do Trabalho"
+                    value={formData.titulo}
+                    placeholder="Selecione ou digite o título"
+                    readOnly
+                    className="hidden w-full mb-2 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
+                    required
+                  />
 
-                <input
-                  data-label="Número da Equipe"
-                  value={formData.numeroEquipe}
-                  placeholder="Selecione ou digite o número da equipe"
-                  readOnly
-                  className="hidden w-full mb-2 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
-                  required
-                />
+                  <input
+                    data-label="Número da Equipe"
+                    value={formData.numeroEquipe}
+                    placeholder="Selecione ou digite o número da equipe"
+                    readOnly
+                    className="hidden w-full mb-2 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
+                    required
+                  />
 
-                <AutoCompleteInput
-                  label="Número e Título do Trabalho"
-                  value={numeroEquipeTitulo}
-                  onChange={(value) => {
-                    handleChangeNumeroEquipeTitulo("numeroEquipeTitulo", value);
-                    // handleTrabalhoSelect(value);
-                  }}
-                  options={generateTodosNumeroEquipeETitulo()}
-                  placeholder="Selecione ou digite o título"
-                  required
-                />
+                  <AutoCompleteInput
+                    label="Número e Título do Trabalho"
+                    value={numeroEquipeTitulo}
+                    onChange={(value) => {
+                      handleChangeNumeroEquipeTitulo(
+                        "numeroEquipeTitulo",
+                        value
+                      );
+                      // handleTrabalhoSelect(value);
+                    }}
+                    options={generateTodosNumeroEquipeETitulo()}
+                    placeholder="Selecione ou digite o título"
+                    required
+                  />
 
-                <p className="text-xs text-gray-500 mt-1 flex flex-col">
-                  <span>Número da equipe: {formData.numeroEquipe}</span>
-                  <span>Título do trabalho: {formData.titulo}</span>
-                </p>
+                  <p className="text-xs text-gray-500 mt-1 flex flex-col">
+                    <span>Número da equipe: {formData.numeroEquipe}</span>
+                    <span>Título do trabalho: {formData.titulo}</span>
+                  </p>
 
-                {/* {avaliadorSelecionado && !mostrarTodosTrabalhos && (
+                  {/* {avaliadorSelecionado && !mostrarTodosTrabalhos && (
                   <p className="text-xs text-gray-500 mt-1">
                     Mostrando {trabalhosFiltrados.length} trabalhos atribuídos a{" "}
                     {avaliadorSelecionado.nome}
                   </p>
                 )} */}
 
-                {trabalhoHasObservacoes && (
-                  <p className="text-xs text-red-500 mt-1">
-                    Este trabalho possui observações sobre a equipe. Consulte a
-                    organização para entender.
-                  </p>
-                )}
-              </div>
+                  {trabalhoHasObservacoes && (
+                    <p className="text-xs text-red-500 mt-1">
+                      Este trabalho possui observações sobre a equipe. Consulte
+                      a organização para entender.
+                    </p>
+                  )}
+                </div>
 
-              {/* Número da Equipe */}
-              {/* <AutoCompleteInput
+                {/* Número da Equipe */}
+                {/* <AutoCompleteInput
                 label="Número da Equipe"
                 value={formData.numeroEquipe}
                 onChange={(value) => {
@@ -442,117 +452,123 @@ export default function FormularioAvaliacao() {
                 required
               /> */}
 
-              {/* Campos de Nota */}
-              <div className="grid grid-cols-1 gap-4">
-                <NotaInput
-                  label="Domínio do tema"
-                  value={formData.dominioTema}
-                  onChange={(value) => handleChange("dominioTema", value)}
-                  required
-                />
+                {/* Campos de Nota */}
+                <div className="grid grid-cols-1 gap-4">
+                  <NotaInput
+                    label="Domínio do tema"
+                    value={formData.dominioTema}
+                    onChange={(value) => handleChange("dominioTema", value)}
+                    required
+                  />
 
-                <NotaInput
-                  label="Exposição oral e integração da equipe"
-                  value={formData.exposicaoOral}
-                  onChange={(value) => handleChange("exposicaoOral", value)}
-                  required
-                />
+                  <NotaInput
+                    label="Exposição oral e integração da equipe"
+                    value={formData.exposicaoOral}
+                    onChange={(value) => handleChange("exposicaoOral", value)}
+                    required
+                  />
 
-                <NotaInput
-                  label="Uso dos recursos empregados e qualidade do material"
-                  value={formData.usoRecursos}
-                  onChange={(value) => handleChange("usoRecursos", value)}
-                  required
-                />
+                  <NotaInput
+                    label="Uso dos recursos empregados e qualidade do material"
+                    value={formData.usoRecursos}
+                    onChange={(value) => handleChange("usoRecursos", value)}
+                    required
+                  />
 
-                <NotaInput
-                  label="Cumprimento da proposta e organização da equipe"
-                  value={formData.cumprimentoProposta}
-                  onChange={(value) =>
-                    handleChange("cumprimentoProposta", value)
-                  }
-                  required
-                />
+                  <NotaInput
+                    label="Cumprimento da proposta e organização da equipe"
+                    value={formData.cumprimentoProposta}
+                    onChange={(value) =>
+                      handleChange("cumprimentoProposta", value)
+                    }
+                    required
+                  />
 
-                <NotaInput
-                  label="Inovação e criatividade"
-                  value={formData.inovacaoCriatividade}
-                  onChange={(value) =>
-                    handleChange("inovacaoCriatividade", value)
-                  }
-                  required
-                />
-              </div>
-
-              <div className="flex flex-start items-center mb-2">
-                <span className="text-sm text-gray-800 mr-2">Nota final: </span>
-                <span className="text-sm text-green-600">
-                  {notaFinal.toFixed(1)}
-                </span>
-              </div>
-
-              {/* Observações */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Observações adicionais
-                </label>
-                <textarea
-                  value={formData.observacoes}
-                  onChange={(e) => handleChange("observacoes", e.target.value)}
-                  rows={4}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500"
-                  placeholder="Ausência de aluno, observação sobre apresentação, etc."
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Palavra passe
-                </label>
-                <span className="text-sm text-red-600 mr-2">
-                  Para submeter utilize a palavra passe que foi enviada pela
-                  organização
-                </span>
-                <input
-                  type="text"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500"
-                  placeholder="Palavra passe"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                />
-              </div>
-
-              {/* Botão Submit */}
-              <div>
-                <button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="w-full bg-green-600 text-white py-3 px-4 rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition duration-200 hover:cursor-pointer"
-                >
-                  {isSubmitting ? "Enviando..." : "Enviar Avaliação"}
-                </button>
-              </div>
-
-              {/* Mensagens de Status */}
-              {submitStatus === "success" && (
-                <div className="bg-green-50 border border-green-200 rounded-md p-4">
-                  <p className="text-green-800">
-                    Avaliação enviada com sucesso!
-                  </p>
+                  <NotaInput
+                    label="Inovação e criatividade"
+                    value={formData.inovacaoCriatividade}
+                    onChange={(value) =>
+                      handleChange("inovacaoCriatividade", value)
+                    }
+                    required
+                  />
                 </div>
-              )}
 
-              {submitStatus === "error" && (
-                <div className="bg-red-50 border border-red-200 rounded-md p-4">
-                  <p className="text-red-800">
-                    Erro ao enviar avaliação. Tente novamente.
-                  </p>
+                <div className="flex flex-start items-center mb-2">
+                  <span className="text-sm text-gray-800 mr-2">
+                    Nota final:{" "}
+                  </span>
+                  <span className="text-sm text-green-600">
+                    {notaFinal.toFixed(1)}
+                  </span>
                 </div>
-              )}
-            </form>
+
+                {/* Observações */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Observações adicionais
+                  </label>
+                  <textarea
+                    value={formData.observacoes}
+                    onChange={(e) =>
+                      handleChange("observacoes", e.target.value)
+                    }
+                    rows={4}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500"
+                    placeholder="Ausência de aluno, observação sobre apresentação, etc."
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Palavra passe
+                  </label>
+                  <span className="text-sm text-red-600 mr-2">
+                    Para submeter utilize a palavra passe que foi enviada pela
+                    organização
+                  </span>
+                  <input
+                    type="text"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500"
+                    placeholder="Palavra passe"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                  />
+                </div>
+
+                {/* Botão Submit */}
+                <div>
+                  <button
+                    type="submit"
+                    disabled={isSubmitting}
+                    className="w-full bg-green-600 text-white py-3 px-4 rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition duration-200 hover:cursor-pointer"
+                  >
+                    {isSubmitting ? "Enviando..." : "Enviar Avaliação"}
+                  </button>
+                </div>
+
+                {/* Mensagens de Status */}
+                {submitStatus === "success" && (
+                  <div className="bg-green-50 border border-green-200 rounded-md p-4">
+                    <p className="text-green-800">
+                      Avaliação enviada com sucesso!
+                    </p>
+                  </div>
+                )}
+
+                {submitStatus === "error" && (
+                  <div className="bg-red-50 border border-red-200 rounded-md p-4">
+                    <p className="text-red-800">
+                      Erro ao enviar avaliação. Tente novamente.
+                    </p>
+                  </div>
+                )}
+              </form>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+      <AlertComponent />
+    </>
   );
 }
