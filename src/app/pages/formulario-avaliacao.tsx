@@ -3,12 +3,12 @@
 
 import { toTitleCase } from "@/util/string";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import logoFeira from "../../img/logo-feira-animated.svg";
 import { AutoCompleteInput } from "../components/AutoCompleteInput";
 import { NotaInput } from "../components/NotaInput";
-import { AVALIADORES, EQUIPES, TRABALHOS } from "../data";
-import { FormData, Trabalho } from "../types";
+import { AVALIADORES, TRABALHOS } from "../data";
+import { FormData } from "../types";
 
 export default function FormularioAvaliacao() {
   const [formData, setFormData] = useState<FormData>({
@@ -32,8 +32,8 @@ export default function FormularioAvaliacao() {
     "inovacaoCriatividade",
   ];
 
-  const [mostrarTodosTrabalhos, setMostrarTodosTrabalhos] = useState(false);
-  const [trabalhosFiltrados, setTrabalhosFiltrados] = useState<Trabalho[]>([]);
+  // const [mostrarTodosTrabalhos, setMostrarTodosTrabalhos] = useState(false);
+  // const [trabalhosFiltrados, setTrabalhosFiltrados] = useState<Trabalho[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<
     "idle" | "success" | "error"
@@ -41,23 +41,24 @@ export default function FormularioAvaliacao() {
   const [trabalhoHasObservacoes, setTrabalhoHasObservacoes] = useState(false);
   const [password, setPassword] = useState("");
   const [passwordValidated, setPasswordValidated] = useState(false);
+  const [numeroEquipeTitulo, setNumeroEquipeTitulo] = useState("");
 
   // Encontrar avaliador pelo nome
-  const avaliadorSelecionado = AVALIADORES.find(
-    (av) => av.nome === formData.nomeAvaliador
-  );
+  // const avaliadorSelecionado = AVALIADORES.find(
+  //   (av) => av.nome === formData.nomeAvaliador
+  // );
 
   // Filtrar trabalhos quando o avaliador muda
-  useEffect(() => {
-    if (avaliadorSelecionado && !mostrarTodosTrabalhos) {
-      const trabalhosDoAvaliador = TRABALHOS.filter((trabalho) =>
-        trabalho.avaliadores.includes(avaliadorSelecionado.id)
-      );
-      setTrabalhosFiltrados(trabalhosDoAvaliador);
-    } else {
-      setTrabalhosFiltrados(TRABALHOS);
-    }
-  }, [avaliadorSelecionado, mostrarTodosTrabalhos]);
+  // useEffect(() => {
+  //   if (avaliadorSelecionado && !mostrarTodosTrabalhos) {
+  //     const trabalhosDoAvaliador = TRABALHOS.filter((trabalho) =>
+  //       trabalho.avaliadores.includes(avaliadorSelecionado.id)
+  //     );
+  //     setTrabalhosFiltrados(trabalhosDoAvaliador);
+  //   } else {
+  //     setTrabalhosFiltrados(TRABALHOS);
+  //   }
+  // }, [avaliadorSelecionado, mostrarTodosTrabalhos]);
 
   const handleEmailSelect = (email: string) => {
     const emailParts = email.split("@");
@@ -86,31 +87,57 @@ export default function FormularioAvaliacao() {
   };
 
   // Atualizar título e equipe quando selecionar um trabalho
-  const handleTrabalhoSelect = (titulo: string) => {
-    const trabalho = TRABALHOS.find((t) => t.titulo === titulo);
-    if (trabalho) {
-      setFormData((prev) => ({
-        ...prev,
-        titulo: trabalho.titulo,
-        numeroEquipe: trabalho.equipe,
-      }));
+  // const handleTrabalhoSelect = (titulo: string) => {
+  //   const trabalho = TRABALHOS.find((t) => t.titulo === titulo);
+  //   if (trabalho) {
+  //     setFormData((prev) => ({
+  //       ...prev,
+  //       titulo: trabalho.titulo,
+  //       numeroEquipe: trabalho.equipe,
+  //     }));
+  //   }
+  // };
+
+  // const handleNumeroEquipeSelect = (numeroEquipe: string) => {
+  //   const trabalho = TRABALHOS.find(
+  //     (t) => t.equipe === numeroEquipe.toLocaleUpperCase()
+  //   );
+  //   if (trabalho) {
+  //     setFormData((prev) => ({
+  //       ...prev,
+  //       titulo: trabalho.titulo,
+  //       numeroEquipe: trabalho.equipe,
+  //     }));
+  //   }
+  // };
+
+  const handleChangeNumeroEquipeTitulo = (
+    field: keyof FormData | "numeroEquipeTitulo",
+    value: string
+  ) => {
+    if (field === "numeroEquipeTitulo" && value.trim().length > 0) {
+      const numeroEquipe = value.split(" - ")[0];
+      const titulo = value.split(" - ")[1];
+
+      setNumeroEquipeTitulo(value);
+
+      if (
+        TRABALHOS.find((t) => t.equipe === numeroEquipe) &&
+        TRABALHOS.find((t) => t.titulo === titulo)
+      ) {
+        setFormData((prev) => ({
+          ...prev,
+          numeroEquipe: numeroEquipe,
+          titulo: titulo,
+        }));
+      }
     }
   };
 
-  const handleNumeroEquipeSelect = (numeroEquipe: string) => {
-    const trabalho = TRABALHOS.find(
-      (t) => t.equipe === numeroEquipe.toLocaleUpperCase()
-    );
-    if (trabalho) {
-      setFormData((prev) => ({
-        ...prev,
-        titulo: trabalho.titulo,
-        numeroEquipe: trabalho.equipe,
-      }));
-    }
-  };
-
-  const handleChange = (field: keyof FormData, value: string) => {
+  const handleChange = (
+    field: keyof FormData | "numeroEquipeTitulo",
+    value: string
+  ) => {
     if (field === "titulo" || field === "numeroEquipe") {
       const trabalho = TRABALHOS.find(
         (t) => t.titulo === value || t.equipe === value
@@ -129,6 +156,7 @@ export default function FormularioAvaliacao() {
       console.log("📝 Nota final:", nota);
       setNotaFinal(nota);
     }
+
     setFormData((prev) => ({
       ...prev,
       [field]: value,
@@ -186,18 +214,19 @@ export default function FormularioAvaliacao() {
       setSubmitStatus("success");
 
       // Limpar formulário após sucesso
-      // setFormData({
-      //   email: formData.email,
-      //   nomeAvaliador: formData.nomeAvaliador,
-      //   titulo: "",
-      //   numeroEquipe: "",
-      //   dominioTema: "",
-      //   exposicaoOral: "",
-      //   usoRecursos: "",
-      //   cumprimentoProposta: "",
-      //   inovacaoCriatividade: "",
-      //   observacoes: "",
-      // });
+      setFormData({
+        email: formData.email,
+        nomeAvaliador: formData.nomeAvaliador,
+        titulo: "",
+        numeroEquipe: "",
+        dominioTema: "",
+        exposicaoOral: "",
+        usoRecursos: "",
+        cumprimentoProposta: "",
+        inovacaoCriatividade: "",
+        observacoes: "",
+      });
+      setNumeroEquipeTitulo("");
 
       // Mostrar mensagem de sucesso
       setTimeout(() => {
@@ -222,7 +251,7 @@ export default function FormularioAvaliacao() {
   };
 
   const nomesAvaliadores = AVALIADORES.map((av) => av.nome);
-  const titulosTrabalhos = trabalhosFiltrados.map((t) => t.titulo);
+  // const titulosTrabalhos = trabalhosFiltrados.map((t) => t.titulo);
 
   const verificarPalavraPasse = async () => {
     if (passwordValidated) {
@@ -244,6 +273,30 @@ export default function FormularioAvaliacao() {
     } else {
       return false;
     }
+  };
+
+  const numeroEquipeETitulo = (titulo: string) => {
+    const trabalho = TRABALHOS.find((t) => t.titulo === titulo);
+    if (trabalho) {
+      return `${trabalho.equipe} - ${trabalho.titulo}`;
+    } else {
+      return titulo;
+    }
+  };
+
+  const generateTodosNumeroEquipeETitulo = () => {
+    const numeroEquipeETituloAll = [];
+    for (const trabalho of TRABALHOS) {
+      numeroEquipeETituloAll.push(numeroEquipeETitulo(trabalho.titulo));
+    }
+    numeroEquipeETituloAll.sort((a, b) => {
+      const getNumber = (str: string) => {
+        const match = str.match(/G(\d+)/);
+        return match ? parseInt(match[1]) : 0;
+      };
+      return getNumber(a) - getNumber(b);
+    });
+    return numeroEquipeETituloAll;
   };
 
   return (
@@ -311,7 +364,7 @@ export default function FormularioAvaliacao() {
 
               {/* Título do Trabalho */}
               <div>
-                <div className="flex justify-between items-center mb-1">
+                {/* <div className="flex justify-between items-center mb-1">
                   <label className="block text-sm font-medium text-gray-700"></label>
                   <button
                     type="button"
@@ -324,26 +377,49 @@ export default function FormularioAvaliacao() {
                       ? "Clique aqui para mostrar APENAS trabalhos atribuídos a você"
                       : "Clique aqui para mostrar TODOS os trabalhos"}
                   </button>
-                </div>
+                </div> */}
+
+                <input
+                  data-label="Título do Trabalho"
+                  value={formData.titulo}
+                  placeholder="Selecione ou digite o título"
+                  readOnly
+                  className="hidden w-full mb-2 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
+                  required
+                />
+
+                <input
+                  data-label="Número da Equipe"
+                  value={formData.numeroEquipe}
+                  placeholder="Selecione ou digite o número da equipe"
+                  readOnly
+                  className="hidden w-full mb-2 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
+                  required
+                />
 
                 <AutoCompleteInput
-                  label="Título do Trabalho"
-                  value={formData.titulo}
+                  label="Número e Título do Trabalho"
+                  value={numeroEquipeTitulo}
                   onChange={(value) => {
-                    handleChange("titulo", value);
-                    handleTrabalhoSelect(value);
+                    handleChangeNumeroEquipeTitulo("numeroEquipeTitulo", value);
+                    // handleTrabalhoSelect(value);
                   }}
-                  options={titulosTrabalhos}
+                  options={generateTodosNumeroEquipeETitulo()}
                   placeholder="Selecione ou digite o título"
                   required
                 />
 
-                {avaliadorSelecionado && !mostrarTodosTrabalhos && (
+                <p className="text-xs text-gray-500 mt-1 flex flex-col">
+                  <span>Número da equipe: {formData.numeroEquipe}</span>
+                  <span>Título do trabalho: {formData.titulo}</span>
+                </p>
+
+                {/* {avaliadorSelecionado && !mostrarTodosTrabalhos && (
                   <p className="text-xs text-gray-500 mt-1">
                     Mostrando {trabalhosFiltrados.length} trabalhos atribuídos a{" "}
                     {avaliadorSelecionado.nome}
                   </p>
-                )}
+                )} */}
 
                 {trabalhoHasObservacoes && (
                   <p className="text-xs text-red-500 mt-1">
@@ -354,7 +430,7 @@ export default function FormularioAvaliacao() {
               </div>
 
               {/* Número da Equipe */}
-              <AutoCompleteInput
+              {/* <AutoCompleteInput
                 label="Número da Equipe"
                 value={formData.numeroEquipe}
                 onChange={(value) => {
@@ -364,7 +440,7 @@ export default function FormularioAvaliacao() {
                 options={EQUIPES}
                 placeholder="Ex: G1, G2, etc."
                 required
-              />
+              /> */}
 
               {/* Campos de Nota */}
               <div className="grid grid-cols-1 gap-4">
