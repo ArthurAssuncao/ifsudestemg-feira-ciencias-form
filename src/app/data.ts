@@ -1,4 +1,4 @@
-// data.ts - Dados mockados (você pode substituir por uma API real)
+// data.ts
 import { Avaliador, Trabalho } from "./types";
 
 export const AVALIADORES: Avaliador[] = [
@@ -198,6 +198,12 @@ export const AVALIADORES: Avaliador[] = [
     id: "33",
     nome: "Vívian Ramos Cavalcanti",
     emailUsuario: "vivian.cavalcanti",
+    emailProvedor: "ifsudestemg.edu.br",
+  },
+  {
+    id: "34",
+    nome: "Romilda Aparecida Lopes",
+    emailUsuario: "romilda.lopes",
     emailProvedor: "ifsudestemg.edu.br",
   },
 ];
