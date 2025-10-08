@@ -135,6 +135,15 @@ export default function FormularioAvaliacao() {
         }));
       }
     }
+
+    if (value.trim().length == 0) {
+      setNumeroEquipeTitulo("");
+      setFormData((prev) => ({
+        ...prev,
+        numeroEquipe: "",
+        titulo: "",
+      }));
+    }
   };
 
   const handleChange = (
@@ -430,7 +439,11 @@ export default function FormularioAvaliacao() {
                     required
                   />
 
-                  <p className="text-xs text-gray-500 mt-1 flex flex-col">
+                  <p
+                    className={`text-xs text-gray-500 mt-1 flex flex-col ${
+                      !formData.numeroEquipe && !formData.titulo && "invisible"
+                    }`}
+                  >
                     <span>Número da equipe: {formData.numeroEquipe}</span>
                     <span>Título do trabalho: {formData.titulo}</span>
                   </p>
@@ -531,14 +544,6 @@ export default function FormularioAvaliacao() {
                 </div>
 
                 <div>
-                  <div>
-                    <p>Senha digitada: {password}</p>
-                    <p>Palavra passe: {passwordIsValid ? "✅" : "❌"}</p>
-                    <p>
-                      Senha no inputRef:{" "}
-                      {inputPassRef.current && inputPassRef.current.value}
-                    </p>
-                  </div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     Palavra passe
                   </label>
