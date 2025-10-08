@@ -307,20 +307,20 @@ export default function FormularioAvaliacao() {
 
   return (
     <>
-      <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-2xl mx-auto">
+      <div className="bg-white px-2 sm:px-4 lg:px-8">
+        <div className="xl:max-w-2xl  mx-auto">
           <div className="bg-white rounded-lg shadow-md overflow-hidden">
-            <div className="px-6 py-8">
+            <div className="px-6 py-4">
               <div className="text-center mb-8">
                 <div className="flex items-center justify-center w-full">
                   <Image
                     src={logoFeira}
                     alt="Logo da Feira de Ciências"
-                    width={500}
+                    width={420}
                     height={50}
                   />
                 </div>
-                <h1 className="text-3xl font-bold text-gray-900">
+                <h1 className="text-2xl font-bold text-gray-900">
                   Formulário de Avaliação
                 </h1>
               </div>
