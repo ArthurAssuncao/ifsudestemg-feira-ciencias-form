@@ -15,18 +15,21 @@ export function useAlert() {
   const [alertState, setAlertState] = useState<{
     isOpen: boolean;
     message: string;
+    title: string;
     options: AlertOptions;
   }>({
     isOpen: false,
     message: "",
+    title: "",
     options: {},
   });
 
   const showAlert = useCallback(
-    (message: string, options: AlertOptions = {}) => {
+    (titulo: string, message: string, options: AlertOptions = {}) => {
       setAlertState({
         isOpen: true,
         message,
+        title: titulo,
         options,
       });
     },
@@ -45,6 +48,7 @@ export function useAlert() {
       <Alert
         isOpen={alertState.isOpen}
         message={alertState.message}
+        title={alertState.title}
         onClose={hideAlert}
         {...alertState.options}
       />

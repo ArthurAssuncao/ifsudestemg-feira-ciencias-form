@@ -182,7 +182,7 @@ export default function FormularioAvaliacao() {
       validated = await verificarPalavraPasse();
     }
     if (!passwordIsValid || validated === false) {
-      showAlert("Palavra passe incorreta");
+      showAlert("Error", "Palavra passe incorreta");
       return;
     }
 
@@ -241,6 +241,7 @@ export default function FormularioAvaliacao() {
       setNumeroEquipeTitulo("");
 
       showAlert(
+        "Sucesso",
         `Avaliação do trabalho ${formData.titulo} enviada com sucesso!`
       );
 
@@ -254,6 +255,7 @@ export default function FormularioAvaliacao() {
 
       // Mensagem de erro genérica, já que não podemos ver o erro específico com no-cors
       showAlert(
+        "Error",
         "Erro ao enviar formulário. Verifique sua conexão e tente novamente."
       );
 
