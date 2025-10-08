@@ -3,7 +3,7 @@
 
 import { toTitleCase } from "@/util/string";
 import Image from "next/image";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import logoFeira from "../../img/logo-feira-animated.svg";
 import { AutoCompleteInput } from "../components/AutoCompleteInput";
 import { NotaInput } from "../components/NotaInput";
@@ -44,6 +44,7 @@ export default function FormularioAvaliacao() {
   const [password, setPassword] = useState("");
   const [passwordValidated, setPasswordValidated] = useState(false);
   const [numeroEquipeTitulo, setNumeroEquipeTitulo] = useState("");
+  const inputPassRef = useRef<HTMLInputElement>(null);
 
   // Encontrar avaliador pelo nome
   // const avaliadorSelecionado = AVALIADORES.find(
@@ -263,12 +264,19 @@ export default function FormularioAvaliacao() {
     if (passwordValidated) {
       return true;
     }
+    let passwordToValidate = password;
+    if (
+      inputPassRef.current &&
+      inputPassRef.current.value != passwordToValidate
+    ) {
+      passwordToValidate = inputPassRef.current.value;
+    }
     const response = await fetch("/api/validate", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ password: password }),
+      body: JSON.stringify({ password: passwordToValidate }),
     });
 
     const data = await response.json();
@@ -527,6 +535,7 @@ export default function FormularioAvaliacao() {
                   </span>
                   <input
                     type="text"
+                    ref={inputPassRef}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500"
                     placeholder="Palavra passe"
                     value={password}
