@@ -1,5 +1,8 @@
 // data.ts
+
 import { Avaliador, Trabalho } from "./types";
+
+export const MAX_NOTA = 10;
 
 export const AVALIADORES: Avaliador[] = [
   {

@@ -72,6 +72,16 @@ export function AutoCompleteInput({
     setIsOpen(true);
   };
 
+  const handleClickApagar = () => {
+    setIsOpen(false);
+    if (inputRef.current) {
+      inputRef.current.focus();
+      inputRef.current.value = "";
+      onChange("");
+      setHighlightedIndex(-1);
+    }
+  };
+
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (!isOpen) return;
 
@@ -111,24 +121,35 @@ export function AutoCompleteInput({
 
   return (
     <div className="relative">
-      <label className="block text-sm font-medium text-gray-700 mb-1">
+      <label className="block text-sm font-medium text-black mb-1">
         {label} {required && <span className="text-red-500">*</span>}
       </label>
 
-      <input
-        ref={inputRef}
-        type="text"
-        value={value}
-        onChange={handleInputChange}
-        onFocus={handleInputFocus}
-        onKeyDown={handleKeyDown}
-        placeholder={placeholder}
-        required={required}
-        disabled={disabled}
-        className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
-        aria-autocomplete="list"
-        aria-haspopup="listbox"
-      />
+      <div className="relative flex items-center">
+        <input
+          ref={inputRef}
+          type="text"
+          value={value}
+          onChange={handleInputChange}
+          onFocus={handleInputFocus}
+          onKeyDown={handleKeyDown}
+          placeholder={placeholder}
+          required={required}
+          disabled={disabled}
+          className="size-10 w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500 disabled:bg-gray-100 disabled:cursor-not-allowed text-black "
+          aria-autocomplete="list"
+          aria-haspopup="listbox"
+        />
+        {/* Botão de apagar */}
+        {inputRef.current && isOpen && inputRef.current.value.length > 0 && (
+          <div
+            className="absolute flex items-center justify-center size-9 bg-red-100 top-5 right-0.5 text-2xl transform -translate-y-1/2 text-gray-800 hover:cursor-pointer rounded-md"
+            onClick={handleClickApagar}
+          >
+            x
+          </div>
+        )}
+      </div>
 
       {/* Dropdown de opções */}
       {isOpen && filteredOptions.length > 0 && (
@@ -159,18 +180,18 @@ export function AutoCompleteInput({
       {/* Mensagem quando não há resultados */}
       {isOpen && filteredOptions.length === 0 && (
         <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg">
-          <div className="px-3 py-2 text-gray-500">
+          <div className="px-3 py-2 text-gray-800">
             Nenhum resultado encontrado
           </div>
         </div>
       )}
 
       {/* Indicador de que é um campo de auto-complete */}
-      {options.length > 0 && (
-        <div className="absolute right-3 top-8 transform -translate-y-1/2 text-gray-400">
+      {/* {options.length > 0 && (
+        <div className="absolute right-3 top-8 transform -translate-y-1/2 text-gray-800">
           ⌄
         </div>
-      )}
+      )} */}
     </div>
   );
 }
