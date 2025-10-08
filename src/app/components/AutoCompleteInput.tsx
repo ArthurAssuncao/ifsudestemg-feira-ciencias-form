@@ -10,6 +10,7 @@ interface AutoCompleteInputProps {
   placeholder?: string;
   required?: boolean;
   disabled?: boolean;
+  observacao?: string;
 }
 
 export function AutoCompleteInput({
@@ -20,6 +21,7 @@ export function AutoCompleteInput({
   placeholder,
   required,
   disabled = false,
+  observacao,
 }: AutoCompleteInputProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [filteredOptions, setFilteredOptions] = useState<string[]>([]);
@@ -150,6 +152,11 @@ export function AutoCompleteInput({
           </div>
         )}
       </div>
+      {observacao && (
+        <p className="text-xs text-gray-500 mt-1 flex flex-col">
+          <span>{observacao}</span>
+        </p>
+      )}
 
       {/* Dropdown de opções */}
       {isOpen && filteredOptions.length > 0 && (

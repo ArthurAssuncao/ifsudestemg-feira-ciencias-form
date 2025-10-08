@@ -323,12 +323,22 @@ export default function FormularioAvaliacao() {
                 <h1 className="text-3xl font-bold text-gray-900">
                   Formulário de Avaliação
                 </h1>
-                <p className="text-gray-600 mt-2">
-                  Avaliação de Trabalhos Acadêmicos
-                </p>
               </div>
 
               <form onSubmit={handleSubmit} className="space-y-6">
+                {/* Nome do Avaliador */}
+                <AutoCompleteInput
+                  label="Nome do Avaliador"
+                  value={formData.nomeAvaliador}
+                  onChange={(value) => {
+                    handleChange("nomeAvaliador", value);
+                    handleNomeSelect(value);
+                  }}
+                  options={nomesAvaliadores.map((n) => toTitleCase(n, true))}
+                  observacao="Seus nome/e-mail não vão aparecer nos resultados"
+                  required
+                />
+
                 {/* E-mail */}
                 <div>
                   {/* <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -356,18 +366,6 @@ export default function FormularioAvaliacao() {
                     required
                   />
                 </div>
-
-                {/* Nome do Avaliador */}
-                <AutoCompleteInput
-                  label="Nome do Avaliador"
-                  value={formData.nomeAvaliador}
-                  onChange={(value) => {
-                    handleChange("nomeAvaliador", value);
-                    handleNomeSelect(value);
-                  }}
-                  options={nomesAvaliadores.map((n) => toTitleCase(n, true))}
-                  required
-                />
 
                 {/* Título do Trabalho */}
                 <div>
