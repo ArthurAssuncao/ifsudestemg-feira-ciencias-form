@@ -310,8 +310,8 @@ export default function FormularioAvaliacao() {
       <div className="bg-white px-2 sm:px-4 lg:px-8">
         <div className="xl:max-w-2xl  mx-auto">
           <div className="bg-white rounded-lg shadow-md overflow-hidden">
-            <div className="px-6 py-4">
-              <div className="text-center mb-8">
+            <div className="px-1 py-4">
+              <div className="px-4 text-center mb-8">
                 <div className="flex items-center justify-center w-full">
                   <Image
                     src={logoFeira}
