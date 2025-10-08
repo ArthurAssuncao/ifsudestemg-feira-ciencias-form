@@ -143,7 +143,7 @@ export function AutoCompleteInput({
           aria-haspopup="listbox"
         />
         {/* Botão de apagar */}
-        {inputRef.current && isOpen && inputRef.current.value.length > 0 && (
+        {inputRef.current && inputRef.current.value.length > 0 && (
           <div
             className="absolute flex items-center justify-center size-9 bg-red-100 top-5 right-0.5 text-2xl transform -translate-y-1/2 text-gray-800 hover:cursor-pointer rounded-md"
             onClick={handleClickApagar}
