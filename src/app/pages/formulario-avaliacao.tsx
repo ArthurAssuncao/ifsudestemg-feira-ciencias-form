@@ -320,7 +320,7 @@ export default function FormularioAvaliacao() {
                     height={50}
                   />
                 </div>
-                <h1 className="text-2xl font-bold text-gray-900">
+                <h1 className="text-2xl md:text-lg font-bold text-gray-900">
                   Formulário de Avaliação
                 </h1>
               </div>
