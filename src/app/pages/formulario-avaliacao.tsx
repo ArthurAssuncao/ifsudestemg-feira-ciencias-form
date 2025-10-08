@@ -42,7 +42,7 @@ export default function FormularioAvaliacao() {
   >("idle");
   const [trabalhoHasObservacoes, setTrabalhoHasObservacoes] = useState(false);
   const [password, setPassword] = useState("");
-  const [passwordValidated, setPasswordValidated] = useState(false);
+  const [passwordIsValid, setPasswordIsValid] = useState(false);
   const [numeroEquipeTitulo, setNumeroEquipeTitulo] = useState("");
   const inputPassRef = useRef<HTMLInputElement>(null);
 
@@ -172,7 +172,7 @@ export default function FormularioAvaliacao() {
     if (!validated) {
       validated = await verificarPalavraPasse();
     }
-    if (!passwordValidated || validated === false) {
+    if (!passwordIsValid || validated === false) {
       showAlert("Palavra passe incorreta");
       return;
     }
@@ -260,8 +260,13 @@ export default function FormularioAvaliacao() {
   const nomesAvaliadores = AVALIADORES.map((av) => av.nome);
   // const titulosTrabalhos = trabalhosFiltrados.map((t) => t.titulo);
 
+  const handleChangePassword = (value: string) => {
+    setPassword(value);
+    verificarPalavraPasse();
+  };
+
   const verificarPalavraPasse = async () => {
-    if (passwordValidated) {
+    if (passwordIsValid) {
       return true;
     }
     let passwordToValidate = password;
@@ -282,7 +287,7 @@ export default function FormularioAvaliacao() {
     const data = await response.json();
 
     if (data.success) {
-      setPasswordValidated(true);
+      setPasswordIsValid(true);
       return true;
     } else {
       return false;
@@ -526,6 +531,14 @@ export default function FormularioAvaliacao() {
                 </div>
 
                 <div>
+                  <div>
+                    <p>Senha digitada: {password}</p>
+                    <p>Palavra passe: {passwordIsValid ? "✅" : "❌"}</p>
+                    <p>
+                      Senha no inputRef:{" "}
+                      {inputPassRef.current && inputPassRef.current.value}
+                    </p>
+                  </div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     Palavra passe
                   </label>
@@ -533,14 +546,27 @@ export default function FormularioAvaliacao() {
                     Para submeter utilize a palavra passe que foi enviada pela
                     organização
                   </span>
-                  <input
-                    type="text"
-                    ref={inputPassRef}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500"
-                    placeholder="Palavra passe"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                  />
+                  <div className="relative flex items-center">
+                    <input
+                      type="text"
+                      ref={inputPassRef}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500"
+                      placeholder="Palavra passe"
+                      value={password}
+                      onChange={(e) => handleChangePassword(e.target.value)}
+                    />
+                    <span
+                      className={`absolute right-0 rounded-md flex items-center justify-center text-2xl text-white size-10 ${
+                        passwordIsValid ? "bg-green-500" : "bg-red-500"
+                      }`}
+                    >
+                      {passwordIsValid ? (
+                        <span>&#10003;</span>
+                      ) : (
+                        <span>&#10005;</span>
+                      )}
+                    </span>
+                  </div>
                 </div>
 
                 {/* Botão Submit */}

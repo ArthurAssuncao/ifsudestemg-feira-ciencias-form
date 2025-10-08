@@ -148,7 +148,7 @@ export function AutoCompleteInput({
             className="absolute flex items-center justify-center size-9 bg-red-100 top-5 right-0.5 text-2xl transform -translate-y-1/2 text-gray-800 hover:cursor-pointer rounded-md"
             onClick={handleClickApagar}
           >
-            x
+            &#10005;
           </div>
         )}
       </div>
